@@ -10,18 +10,18 @@ import sys
 # node, and the keys are the letters on those edges, and the
 # values are the node IDs to which these edges lead.
 def build_trie(patterns):
-    tree = dict()
+    trie = dict()
     child = 1
     for p in patterns:
         parent = 0
         for i in range(len(p)):
             c = p[i]
-            if tree.get(parent, None) == None: tree[parent] = {}
-            if tree[parent].get(c, None) == None:
-                tree[parent][c] = child
+            if trie.get(parent, None) == None: trie[parent] = {}
+            if trie[parent].get(c, None) == None:
+                trie[parent][c] = child
                 child += 1
-            parent = tree[parent][c]
-    return tree
+            parent = trie[parent][c]
+    return trie
 
 if __name__ == '__main__':
     patterns = sys.stdin.read().split()[1:]

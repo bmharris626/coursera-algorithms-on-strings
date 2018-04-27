@@ -1,41 +1,39 @@
 # python3
 import sys
 
-NA = -1
-
-class Node:
-    def __init__(self):
-        self.next = {'A': NA, 'C': NA, 'G': NA, 'T': NA}
-        self.word = None
-
 def build_trie(patterns):
-    tree = [Node()]
-    counter = 1
+    trie = dict()
+    child = 1
     for p in patterns:
         parent = 0
-        for c in p:
-            if len(tree) <= counter: tree.append(Node())
-            if tree[parent].next[c] == NA: 
-                tree[parent].next[c] = counter
-                counter += 1
-            if tree[parent].next[c] == NA: break
-            parent = tree[parent].next[c]
-        tree[parent].word = p
-    return tree
+        for i in range(len(p)):
+            c = p[i]
+            if trie.get(parent, None) == None: trie[parent] = {}
+            if trie[parent].get(c, None) == None:
+                trie[parent][c] = child
+                child += 1
+            parent = trie[parent][c]
+    return trie
+
+def prefix_trie_matching(text, trie):
+    i, v = 0, 0
+    s = text[i]
+    while True:
+        if trie.get(v, None) == None: return text[:v]
+        elif trie[v].get(s, None) != None:
+            i += 1
+            v = trie[v][s]
+            if i < len(text): s = text[i]
+            elif i > len(text): return None
+        else: return None
 
 def solve (text, n, patterns):
     result = []
     trie = build_trie(patterns)
-    for i, c in enumerate(text):
-        n, j = 0, i
-        while n != NA:
-            c = text[j]
-            n = trie[n].next[c]
-            if (n != -1) and (trie[n].word != None): 
-                result.append(i)
-                break
-            j += 1
-            if j == len(text): break
+    print(trie)
+    for i in range(len(text)):
+        pattern = prefix_trie_matching(text[i:], trie)
+        if pattern != None: result.append(i)
     return result
 
 text = sys.stdin.readline ().strip ()
